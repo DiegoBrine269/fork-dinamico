@@ -1,3 +1,2 @@
 # fork-dinamico
-# fork-dinamico
-# fork-dinamico
+Creación de procesos hijos en C con la llamada a sistema fork
