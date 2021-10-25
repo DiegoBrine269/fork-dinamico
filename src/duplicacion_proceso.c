@@ -11,11 +11,9 @@ void procesoPadre(pid_t pid);
 
 int main () {
 
-    int niveles = 3;
+    int niveles = 2;
 
     duplicacion(niveles);
-    
-
 
     exit(0);
 }
@@ -25,7 +23,7 @@ void duplicacion(int nivelStop){
     pid_t pid;
     int status;
     
-    int nivelActual = 0;
+    int nivelActual = 1;
 
     //Creamos 2 hijos
     for (size_t i = 0; i < numeroHijos; i++){
@@ -40,11 +38,25 @@ void duplicacion(int nivelStop){
             
             procesoHijo();
             i=0;
-
             if(nivelActual == nivelStop){
                 break;
             }
 
+            pid = fork();
+            if (pid == -1){
+                errorEnFork();
+            }
+            else if (pid == 0){//Ejecución del hijo
+                procesoHijo();
+                // i=0;
+                if(nivelActual == nivelStop){
+                    break;
+                }
+            }
+            else{
+                //Ejecución del padre
+                procesoPadre(pid);
+            }
         }
         else{
             procesoPadre(pid);
