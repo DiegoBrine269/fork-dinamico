@@ -8,9 +8,14 @@ void errorEnFork();
 void procesoHijo();
 void procesoPadre(pid_t pid);
 
-int main () {
+int main (int argc, char *argv[]) {
     pid_t pid;
     int status;
+
+    int i, niveles, hijos;
+
+    niveles = atoi(argv[1]);
+    hijos = atoi(argv[2]);
 
     int numeroHijos = 2;
 
@@ -25,34 +30,21 @@ int main () {
         else if (pid == 0){//Ejecución del hijo
             
             //Cada hijo, crea 1 hijo
-            procesoHijo();
-  
-            pid = fork();
 
-            if (pid == -1){
-                errorEnFork();
-            }
-            else if (pid == 0){//Ejecución del hijo  
-                //Cada hijo, creará otro hijo
-                procesoHijo();
-            }
-            else{
-                //Ejecución del padre
-                procesoPadre(pid);
-            }
-            // wait(NULL);
+            
+            
 
             break;
         }
-        else{//Ejecución del padre
+        else{
             procesoPadre(pid);
         }    
-        // wait(NULL);       
+        wait(NULL);       
     }
 
-    // for (size_t i = 0; i < numeroHijos; i++){
-    //     wait(NULL);
-    // }
+    for (size_t i = 0; i < numeroHijos; i++){
+        wait(NULL);
+    }
 
     exit(0);
 }
@@ -72,9 +64,11 @@ void procesoHijo(){
     pid_t padreID = getppid();
 
     if(miID == padreID+1){
+        //TODO: usar execv, execg... con n niveles y 2 hijos
         printf("\nYo soy el proceso hijo de la izquierda, mi ID es %d El ID del padre es %d\n", miID, padreID);
     }
     else{
+        //TODO: usar execv, execg... con n niveles y 3 hijos
         printf("\nYo soy el proceso hijo de la derecha, mi ID es %d El ID del padre es %d\n", miID, padreID);
     }
 }

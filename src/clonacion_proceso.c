@@ -16,7 +16,6 @@ int main(int argc, char *argv[]){
     pid=-1;
     
     for (i = 1; i <= niveles; i++){
-
         int numeroHijos;
         for(numeroHijos=0; numeroHijos<hijos; numeroHijos++){
             pid=fork();
