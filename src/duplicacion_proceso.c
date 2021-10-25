@@ -1,89 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
+#include <sys/wait.h>
+#include <math.h>
 
-void duplicacion(int nivelStop);
-void errorEnFork();
-void procesoHijo();
-void procesoPadre(pid_t pid);
+void infoProceso(int i, pid_t pid);
 
-int main () {
+int main(int argc, char *argv[]){
 
-    int niveles = 2;
-
-    duplicacion(niveles);
-
-    exit(0);
-}
-
-void duplicacion(int nivelStop){
-    int numeroHijos = 2;
     pid_t pid;
-    int status;
+    int i, niveles;
+
+    niveles = atoi(argv[1]);
+    pid=-1;
     
-    int nivelActual = 1;
+    for (i = 1; i <= niveles; i++){
 
-    //Creamos 2 hijos
-    for (size_t i = 0; i < numeroHijos; i++){
-
-        pid = fork();
-        nivelActual++;
-
-        if (pid == -1){
-            errorEnFork();
+        int numeroHijos;
+        for(numeroHijos=0; numeroHijos<2; numeroHijos++){
+            pid=fork();
+            if (pid <= 0) break;
         }
-        else if (pid == 0){//Ejecución del hijo
-            
-            procesoHijo();
-            i=0;
-            if(nivelActual == nivelStop){
-                break;
-            }
+        if (pid > 0) break;
 
-            pid = fork();
-            if (pid == -1){
-                errorEnFork();
-            }
-            else if (pid == 0){//Ejecución del hijo
-                procesoHijo();
-                // i=0;
-                if(nivelActual == nivelStop){
-                    break;
-                }
-            }
-            else{
-                //Ejecución del padre
-                procesoPadre(pid);
-            }
-        }
-        else{
-            procesoPadre(pid);
-        }    
-     
     }
+    
+    while(wait(NULL) > 0) ; 
+
+    infoProceso(i, pid);
+    
+    return 0;
 }
 
-void errorEnFork(){
-    printf("\nNo se pudo crear un proceso hijo");
-}
-
-void procesoPadre(pid_t pid){
-    pid_t miID = getpid();
-    pid_t hijoID = pid;
-    printf("\nYo soy el proceso padre, mi ID es: %d El ID del hijo es %d\n", miID, hijoID);
-}
-
-void procesoHijo(){
-    pid_t miID = getpid();
-    pid_t padreID = getppid();
-
-    if(miID == padreID+1){
-        printf("\nYo soy el proceso hijo de la izquierda, mi ID es %d El ID del padre es %d\n", miID, padreID);
-    }
-    else{
-        printf("\nYo soy el proceso hijo de la derecha, mi ID es %d El ID del padre es %d\n", miID, padreID);
-    }
-    sleep(2);
+void infoProceso(int i, pid_t pid){
+    printf("Nivel:%d ID de proceso:%ld ID del padre:%ld ID del hijo:%ld\n",i, (long)getpid(), (long)getppid(), (long)pid);
 }
