@@ -9,22 +9,22 @@ void infoProceso(int i, pid_t pid);
 int main(int argc, char *argv[]){
 
     pid_t pid;
-    int i, niveles;
+    int i, niveles, hijos;
 
     niveles = atoi(argv[1]);
+    hijos = atoi(argv[2]);
     pid=-1;
     
     for (i = 1; i <= niveles; i++){
 
         int numeroHijos;
-        for(numeroHijos=0; numeroHijos<2; numeroHijos++){
+        for(numeroHijos=0; numeroHijos<hijos; numeroHijos++){
             pid=fork();
             if (pid <= 0) break;
         }
         if (pid > 0) break;
-
     }
-    
+
     while(wait(NULL) > 0) ; 
 
     infoProceso(i, pid);
